@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"log"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -40,6 +41,6 @@ func createTables() {
 
 	_, err := DB.Exec(createEventsTable)
 	if err != nil {
-		panic("Could not create events table")
+		log.Fatalf("Could not create events table: %v", err)
 	}
 }
