@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"log"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 var DB *sql.DB
@@ -12,7 +12,7 @@ var DB *sql.DB
 func InitDB() {
 
 	var err error
-	DB, err = sql.Open("sqlite3", "event_api.db")
+	DB, err = sql.Open("sqlite", "event_api.db")
 
 	if err != nil {
 		panic("Could not connect to database")

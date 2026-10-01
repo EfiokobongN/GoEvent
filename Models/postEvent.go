@@ -1,9 +1,13 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	db "goapi.com/event/DB"
+)
 
 type PostEvent struct {
-	ID          int
+	ID          int64
 	Title       string    `binding:"required`
 	Description string    `binding:"required`
 	Location    string    `binding:"required`
@@ -17,8 +21,22 @@ type PostEvent struct {
 
 var postEvents = []PostEvent{}
 
-func (event PostEvent) Save() {
-	//TODO: Save event to database
+func (event PostEvent) Save() error {
+	query := `INSERT INTO events (title, description, location,datetime, user_id, bannerimage, category) VALUES(?,?,?,?,?,?,?)`
+	stmt, err := db.DB.Prepare(query)
 
-	postEvents = append(postEvents, event)
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+	result, err := stmt.Exec(event.Title, event.Description, event.Location, event.DateTime, event.UserID, event.BannerImage, event.Category)
+
+	if err != nil {
+		return err
+	}
+
+	id, err := result.LastInsertId()
+	event.ID = id
+	return err
 }
