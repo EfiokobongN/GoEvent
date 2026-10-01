@@ -29,5 +29,5 @@ func GetAllEvent() ([]PostEvent, error) {
 		events = append(events, event)
 	}
 
-	return getEvents, nil
+	return events, nil
 }
