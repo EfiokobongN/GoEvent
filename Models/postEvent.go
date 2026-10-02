@@ -44,3 +44,34 @@ func (event *PostEvent) Save() error {
 	event.ID = id
 	return nil
 }
+
+func (event PostEvent) Update() error {
+	query := `
+	UPDATE events
+	SET title = ?, description = ?, location = ?, date_time = ?, banner_image = ?, category = ?
+	WHERE id = ?`
+
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(event.Title, event.Description, event.Location, event.DateTime, event.BannerImage, event.Category, event.ID)
+
+	return err
+
+}
+
+func (event PostEvent) Delete() error {
+	query := "DELETE FROM events WHERE id = ?"
+
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(event.ID)
+	return err
+}
