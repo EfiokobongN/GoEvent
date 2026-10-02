@@ -49,11 +49,11 @@ func createTables() {
 		location      TEXT NOT NULL,
 		date_time     DATETIME NOT NULL,
 		user_id       INTEGER,
-		FOREIGN KEY(user_id) REFERENCES users(id)
 		banner_image  TEXT NOT NULL,
 		category      TEXT NOT NULL,
 		created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
-		updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP
+		updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY(user_id) REFERENCES users(id)
 	)
 	`
 
