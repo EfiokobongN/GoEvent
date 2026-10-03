@@ -1,9 +1,12 @@
 package models
 
-import db "goapi.com/event/DB"
+import (
+	db "goapi.com/event/DB"
+	util "goapi.com/event/Util"
+)
 
 type User struct {
-	ID       int64  `binding: "required"`
+	ID       int64  `json:"id"`
 	FullName string `binding: "required"`
 	Email    string `binding: "required"`
 	PhoneNo  string `binding: "required"`
@@ -11,7 +14,7 @@ type User struct {
 }
 
 func (u *User) Save() error {
-	query := `INSERT INTO users (full_name, email, phone_no, password)
+	query := `INSERT INTO users (fullName, email, phoneNo, password)
 	          VALUES (?, ?, ?, ?)`
 
 	stmt, err := db.DB.Prepare(query)
@@ -20,7 +23,12 @@ func (u *User) Save() error {
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(u.FullName, u.Email, u.PhoneNo, u.Password)
+	hashPassword, err := util.HashPassword(u.Password)
+	if err != nil {
+		return err
+	}
+
+	result, err := stmt.Exec(u.FullName, u.Email, u.PhoneNo, hashPassword)
 	if err != nil {
 		return err
 	}

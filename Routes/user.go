@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -18,6 +19,7 @@ func signUp(context *gin.Context) {
 
 	err = userReg.Save()
 	if err != nil {
+		log.Println("signup save error:", err)
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not register account. Try again later"})
 		return
 	}
