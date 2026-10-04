@@ -1,6 +1,8 @@
 package models
 
 import (
+	"errors"
+
 	db "goapi.com/event/DB"
 	util "goapi.com/event/Util"
 )
@@ -38,5 +40,23 @@ func (u *User) Save() error {
 		return err
 	}
 	u.ID = id
+	return nil
+}
+
+func (login User) ValidateLogin() error {
+	query := "SELECT password FROM users WHERE email= ?"
+	row := db.DB.QueryRow(query, login.Email)
+
+	var retrievedPassword string
+	err := row.Scan(&retrievedPassword)
+	if err != nil {
+		return errors.New("invalid login details")
+	}
+
+	passwordValid := util.CheckPassword(login.Password, retrievedPassword)
+
+	if !passwordValid {
+		return errors.New("invalid login details")
+	}
 	return nil
 }
