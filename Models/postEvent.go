@@ -12,7 +12,7 @@ type PostEvent struct {
 	Description string    `json:"description" binding:"required"`
 	Location    string    `json:"location" binding:"required"`
 	DateTime    time.Time `json:"date_time" binding:"required"`
-	UserID      int       `json:"user_id"`
+	UserID      int64     `json:"user_id"`
 	BannerImage string    `json:"banner_image" binding:"required"`
 	Category    string    `json:"category" binding:"required"`
 	CreatedAt   time.Time `json:"created_at"`
