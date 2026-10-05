@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	models "goapi.com/event/Models"
+	util "goapi.com/event/Util"
 )
 
 func signUp(context *gin.Context) {
@@ -42,5 +43,14 @@ func login(context *gin.Context) {
 		context.JSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
 		return
 	}
-	context.JSON(http.StatusOK, gin.H{"message": "Login Successful"})
+
+	token, err := util.GenerateToken(userLogin.Email, userLogin.ID)
+
+	if err != nil {
+		log.Println("token generate error:", err)
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not authenticate User. Try again later"})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"message": "Login Successful", "token": token})
 }

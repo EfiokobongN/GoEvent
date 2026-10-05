@@ -44,11 +44,11 @@ func (u *User) Save() error {
 }
 
 func (login User) ValidateLogin() error {
-	query := "SELECT password FROM users WHERE email= ?"
+	query := "SELECT id, password FROM users WHERE email= ?"
 	row := db.DB.QueryRow(query, login.Email)
 
 	var retrievedPassword string
-	err := row.Scan(&retrievedPassword)
+	err := row.Scan(&login.ID, &retrievedPassword)
 	if err != nil {
 		return errors.New("invalid login details")
 	}

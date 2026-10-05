@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	models "goapi.com/event/Models"
+	util "goapi.com/event/Util"
 )
 
 func getEvents(context *gin.Context) {
@@ -37,8 +38,19 @@ func getEvent(context *gin.Context) {
 }
 
 func createEvent(context *gin.Context) {
+	token := context.Request.Header.Get("Authorization")
+	if token == "" {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "Not Authorize"})
+		return
+	}
+
+	err := util.VerifyToken(token)
+	if err != nil {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "Not Authorize"})
+		return
+	}
 	var eventSave models.PostEvent
-	err := context.ShouldBindJSON(&eventSave)
+	err = context.ShouldBindJSON(&eventSave)
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse request data"})
