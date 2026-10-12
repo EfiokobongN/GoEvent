@@ -13,6 +13,9 @@ type PostEvent struct {
 	Location    string    `json:"location" binding:"required"`
 	DateTime    time.Time `json:"date_time" binding:"required"`
 	UserID      int64     `json:"user_id"`
+	FullName    string    `json:"fullName: "null"`
+	Email       string    `json:"email: "null"`
+	PhoneNo     string    `json:"phoneNo: "null"`
 	BannerImage string    `json:"banner_image" binding:"required"`
 	Category    string    `json:"category" binding:"required"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -73,5 +76,35 @@ func (event PostEvent) Delete() error {
 	defer stmt.Close()
 
 	_, err = stmt.Exec(event.ID)
+	return err
+}
+
+func (event PostEvent) RegisterUserForEvent(userId int64) error {
+	query := `INSERT INTO attendance (event_id, user_id, fullName, email, phoneNo)
+	          VALUES (?, ?, ?, ?, ?)`
+
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(event.ID, userId, event.FullName,
+		event.Email, event.PhoneNo)
+
+	return err
+
+}
+
+func (event PostEvent) CancelUserRegistration(userId int64) error {
+	query := "DELETE FROM attendance WHERE event_id = ? AND user_id = ?"
+
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(event.ID, userId)
 	return err
 }
